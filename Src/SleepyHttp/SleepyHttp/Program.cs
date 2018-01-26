@@ -13,16 +13,17 @@ namespace SleepyHttp
     class Program
     {
         static HttpListener _httpListener;
-        static string _hostPath;
+        static Config _config;
 
         static void Main(string[] args)
         {
-            _hostPath = GetHostPath("ggj2018");
+            _config = Config.Load();
+
             _httpListener = new HttpListener();
-            _httpListener.Prefixes.Add(_hostPath);
+            _httpListener.Prefixes.Add(_config.HostPath);
 
             Console.WriteLine("Started");
-            Console.WriteLine(_hostPath);
+            Console.WriteLine(_config.HostPath);
 
             _httpListener.Start();
             _httpListener.BeginGetContext(StartHttpGet, null);
@@ -43,7 +44,7 @@ namespace SleepyHttp
 
                 Console.WriteLine("{0} {1}", context.Request.HttpMethod, context.Request.Url.AbsoluteUri);
 
-                WriteFile(_hostPath, context);
+                WriteFile(_config.HostPath, context);
             }
             catch (Exception e)
             {
@@ -110,11 +111,6 @@ namespace SleepyHttp
         }
 
 
-        static string GetHostPath(string name)
-        {
-            var hostName = Dns.GetHostName();
-            var myIp = Dns.GetHostEntry(hostName).AddressList.First(a => a.AddressFamily == AddressFamily.InterNetwork);
-            return string.Format("http://{0}/{1}/", myIp, name);
-        }
+        
     }
 }

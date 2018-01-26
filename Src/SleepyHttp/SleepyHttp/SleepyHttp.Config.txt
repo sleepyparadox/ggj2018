@@ -1,0 +1,2 @@
+// uncomment below to run as server
+//hostpath	http://127.0.0.1/ggj2018/
