@@ -81,6 +81,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="ggj2018.unity.CSharp.Plugins.csproj">
+      <Project>{372D3DBE-2797-64B9-1B68-2FB32BE8139C}</Project>
+      <Name>ggj2018.unity.CSharp.Plugins</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Assets\AirConsole\examples\basic\ExampleBasicLogic.cs" />
     <Compile Include="Assets\AirConsole\examples\pong\ExamplePongLogic.cs" />
     <Compile Include="Assets\AirConsole\examples\pong\scripts\Racket.cs" />
@@ -241,11 +247,21 @@
     <Compile Include="Assets\AirConsole\scripts\DebugLevel.cs" />
     <Compile Include="Assets\AirConsole\scripts\Settings.cs" />
     <Compile Include="Assets\AirConsole\scripts\WebsocketListener.cs" />
+    <Compile Include="Assets\Scripts\Car.cs" />
+    <Compile Include="Assets\Scripts\Device.cs" />
+    <Compile Include="Assets\Scripts\Lane.cs" />
+    <Compile Include="Assets\Scripts\Level.cs" />
+    <Compile Include="Assets\Scripts\Logs.cs" />
     <Compile Include="Assets\Scripts\MainApp.cs" />
+    <Compile Include="Assets\Scripts\Prefabs.cs" />
+    <Compile Include="Assets\Scripts\TinyCoro\TinyCoro.cs" />
+    <Compile Include="Assets\Scripts\TinyCoro\TinyCoroStatic.cs" />
+    <Compile Include="Assets\Scripts\TinyCoro\TinyThread.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AirConsole\README.txt" />
     <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
+    <None Include="Assets\Plugins\Pixelplacement\iTween\ReadMe!\ReadMe!.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

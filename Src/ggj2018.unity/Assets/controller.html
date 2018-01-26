@@ -43,7 +43,7 @@
        * @param amount
        */
       function move(amount) {
-          airconsole.message(AirConsole.SCREEN, { move: amount })
+          airconsole.message(AirConsole.SCREEN, { "type": "move", "data": amount })
       }
 
   </script>
@@ -91,13 +91,12 @@
 </head>
 <body onload="init()">
 <div style="height: 1%"></div>
-<div class=button ontouchstart="move(-50)" ontouchend="move(0)" onmousedown="move(-50)" onmouseup="move(0)">
-  <div class="button_label">UP</div>
+<div class=button ontouchstart="move(-1)" ontouchend="move(0)" onmousedown="move(-1)" onmouseup="move(0)">
+  <div class="button_label">Back</div>
 </div>
 <div style="height: 8%"></div>
-<div class=button ontouchstart="move(50)" ontouchend="move(0)" onmousedown="move(50)" onmouseup="move(0)">
-  <div class="button_label">DOWN</div>
+<div class=button ontouchstart="move(1)" ontouchend="move(0)" onmousedown="move(1)" onmouseup="move(0)">
+  <div class="button_label">Forward</div>
 </div>
-<div id="player_id">It's a 2 player game</div>
 </body>
 </html>
