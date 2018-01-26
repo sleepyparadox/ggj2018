@@ -6,9 +6,11 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
-    public class Car : MonoBehaviour
+    public class Car 
     {
         public Device Device;
+
+        public Vector3 Position;
 
         public float MaxSpeed = 10;
         public float Acceleration = 100;
@@ -18,17 +20,21 @@ namespace Assets.Scripts
 
         public void Reset()
         {
-            transform.position = Lane.Start;
-            transform.forward = Lane.Direction;
+            Position = Lane.Start;
         }
 
-        public void Update()
+        public void Update(int particleId)
         {
             var targetSpeed = Device.Input.Speed * MaxSpeed;
             CarSpeed = Mathf.Lerp(CarSpeed, targetSpeed, Acceleration * Time.deltaTime);
 
-            var targetPos = transform.position + ( Lane.Direction * CarSpeed * Time.deltaTime);
-            transform.position = Lane.Clamp(targetPos);
+            var targetPos = Position + ( Lane.Direction * CarSpeed * Time.deltaTime);
+            Position = Lane.Clamp(targetPos);
+
+            CarParticles.S.Particles[particleId].position = Position;
+            CarParticles.S.Particles[particleId].remainingLifetime = 10f;
+            CarParticles.S.Particles[particleId].startSize = 1f;
+
         }
     }
 }

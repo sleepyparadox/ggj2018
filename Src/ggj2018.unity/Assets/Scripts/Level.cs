@@ -41,8 +41,7 @@ namespace Assets.Scripts
                 if (_cars.ContainsKey(device))
                     continue;
 
-                var car = Car.Instantiate<Car>(Prefabs.S.Car);
-                car.transform.parent = CarsParent;
+                var car = new Car();
                 car.Device = device;
                 car.Lane = _lanes[UnityEngine.Random.Range(0, _lanes.Count)];
                 car.Reset();
@@ -52,9 +51,11 @@ namespace Assets.Scripts
 
         void UpdateCars()
         {
+            CarParticles.S.ParticleCount = 0;
             foreach (var car in _cars.Values)
             {
-                car.Update();
+                car.Update(CarParticles.S.ParticleCount);
+                CarParticles.S.ParticleCount++;
             }
         }
     }
