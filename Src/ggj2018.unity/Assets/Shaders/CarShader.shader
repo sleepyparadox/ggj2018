@@ -3,7 +3,6 @@
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
-		_TintColor("Tint Color", Color) = (0.5,0.5,0.5,0.5)
 		_WhiteDetect("White Factor", Range(0.01, 1)) = 0.9
 	}
 	SubShader
@@ -25,6 +24,7 @@
 			{
 				float4 vertex : POSITION;
 				float2 uv : TEXCOORD0;
+				float4 color : COLOR;
 			};
 
 			struct v2f
@@ -32,11 +32,11 @@
 				float2 uv : TEXCOORD0;
 				UNITY_FOG_COORDS(1)
 				float4 vertex : SV_POSITION;
+				float4 color : COLOR;
 			};
 
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
-			float4 _TintColor;
 			float _WhiteDetect;
 
 			v2f vert (appdata v)
@@ -44,6 +44,7 @@
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+				o.color = v.color;
 				UNITY_TRANSFER_FOG(o,o.vertex);
 				return o;
 			}
@@ -61,7 +62,7 @@
 				}
 				else
 				{
-					col.rgb = _TintColor.rgb;
+					col.rgb = i.color;
 				}
 
 				// apply fog
