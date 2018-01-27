@@ -46,6 +46,7 @@ namespace Assets.Scripts
             foreach (var car in carsToRemove)
             {
                 Cars.Remove(car);
+                Level.CarDeleted(car);
             }
         }
     }

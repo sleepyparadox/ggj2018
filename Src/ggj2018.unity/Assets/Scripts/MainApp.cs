@@ -11,6 +11,7 @@ namespace Assets.Scripts
     {
         public static MainApp S { get; private set; }
         public Dictionary<int, Device> Devices = new Dictionary<int, Device>();
+        public Level CurrentLevel;
 
         void Awake()
         {
@@ -33,12 +34,13 @@ namespace Assets.Scripts
         {
             while (true)
             {
-                var level = Level.Instantiate<Level>(Prefabs.S.Level1);
+                CurrentLevel = Level.Instantiate<Level>(Prefabs.S.Level1);
 
-                var runLevel = TinyCoro.SpawnNext(level.Run);
+                var runLevel = TinyCoro.SpawnNext(CurrentLevel.Run);
                 yield return TinyCoro.Join(runLevel);
 
-                Level.Destroy(level);
+                Level.Destroy(CurrentLevel);
+                CurrentLevel = null;
             }
         }
 
@@ -47,7 +49,9 @@ namespace Assets.Scripts
             if (Devices.ContainsKey(device_id) == false)
                 Devices.Add(device_id, new Device(device_id));
 
-            Devices[device_id].Connected = true;
+            var device = Devices[device_id];
+            device.Connected = true;
+            device.SetRole(device.Role);
         }
 
         void OnDisconnect(int device_id)
@@ -73,11 +77,20 @@ namespace Assets.Scripts
                 case "move":
                     OnMove(device, (int)message[DataKey]);
                     break;
+                case "honk":
+                    OnHonk(device);
+                    break;
                 default:
-                    throw new NotImplementedException("message type " + msgType);
+                    Debug.LogWarning("message type " + msgType);
+                    break;
             }
 
             Logs.Log(Newtonsoft.Json.JsonConvert.SerializeObject(message));
+        }
+
+        void OnHonk(Device device)
+        {
+
         }
 
         void OnMove(Device device, float acceleration)

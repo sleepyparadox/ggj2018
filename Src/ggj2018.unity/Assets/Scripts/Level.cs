@@ -12,7 +12,7 @@ namespace Assets.Scripts
         public Transform LaneParent;
         public Transform TrafficLightParent;
 
-        public float LaneLength = 10;
+        public float LaneLength = 100;
 
         List<Lane> _lanes = new List<Lane>();
         Dictionary<Device, Car> _cars = new Dictionary<Device, Car>();
@@ -38,10 +38,56 @@ namespace Assets.Scripts
                 foreach (var lane in _lanes)
                     lane.Update();
 
+                RepopulateDevices();
+
                 yield return null;
             }
         }
         
+        void RepopulateDevices()
+        {
+            foreach (var device in MainApp.S.Devices.Values)
+            {
+                if(device.Connected == false && _cars.ContainsKey(device))
+                {
+                    // Cleanup disconnected car
+                    _cars[device].Device = null;
+                    _cars.Remove(device);
+                }
+
+                if (_cars.ContainsKey(device) || device.Connected == false)
+                    continue;
+
+                const float MinDistance = Car.SpawnLength * 3f;
+                var suitableHost = _lanes.SelectMany(l => l.Cars)
+                    .OrderBy(c => c.Position)
+                    .Where(c => c.Position >= MinDistance && c.Device == null)
+                    .FirstOrDefault();
+
+                if (suitableHost == null)
+                {
+                    Debug.Log("no car found for " + device.DeviceId);
+                    continue;
+                }
+
+                Debug.Log("car found for " + device.DeviceId);
+                suitableHost.Device = device;
+                device.SetRole(DeviceRole.Car);
+                _cars.Add(device, suitableHost);
+            }
+        }
+
+        public void CarDeleted(Car car)
+        {
+            if(_cars.Any(p => p.Value == car))
+            {
+                var pair = _cars.First(p => p.Value == car);
+
+                pair.Key.SetRole(DeviceRole.Wait);
+                _cars.Remove(pair.Key);
+            }
+        }
+
         void OnDrawGizmos()
         {
             for (int i = 0; i < LaneParent.childCount; i++)
