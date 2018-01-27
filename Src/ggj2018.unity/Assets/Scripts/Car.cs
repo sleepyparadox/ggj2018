@@ -67,8 +67,6 @@ namespace Assets.Scripts
 
             if(nextCar != null && Position + Length > nextCar.Position)
             {
-                Debug.Log("bump! " + (nextIndex - 1) + " and " + nextIndex);
-
                 nextCar.Position = Position + Length;
 
                 var sharedSpeed = (CarSpeed + nextCar.CarSpeed) / 2f;
