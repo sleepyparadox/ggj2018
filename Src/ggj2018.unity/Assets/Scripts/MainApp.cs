@@ -90,7 +90,6 @@ namespace Assets.Scripts
 
         void OnHonk(Device device)
         {
-
         }
 
         void OnMove(Device device, float acceleration)
