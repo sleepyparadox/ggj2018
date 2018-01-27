@@ -5,16 +5,16 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{372D3DBE-2797-64B9-1B68-2FB32BE8139C}</ProjectGuid>
+    <ProjectGuid>{C52DB4A1-94FC-A167-9CBD-9DCC0BC77F26}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AssemblyName>Assembly-CSharp-firstpass</AssemblyName>
+    <AssemblyName>Assembly-CSharp-Editor-firstpass</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
+    <TargetFrameworkProfile>Unity Full v3.5</TargetFrameworkProfile>
     <CompilerResponseFile></CompilerResponseFile>
-    <UnityProjectType>GamePlugins:3</UnityProjectType>
+    <UnityProjectType>EditorPlugins:7</UnityProjectType>
     <UnityBuildTarget>WebGL:20</UnityBuildTarget>
     <UnityVersion>2017.1.0f3</UnityVersion>
     <RootNamespace></RootNamespace>
@@ -55,11 +55,23 @@
     <Reference Include="UnityEngine">
       <HintPath>Library\UnityAssemblies\UnityEngine.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.Advertisements">
+      <HintPath>Library\UnityAssemblies\UnityEditor.Advertisements.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.UI">
+      <HintPath>Library\UnityAssemblies\UnityEditor.UI.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.Networking">
       <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.Networking">
+      <HintPath>Library\UnityAssemblies\UnityEditor.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.TestRunner">
+      <HintPath>Library\UnityAssemblies\UnityEditor.TestRunner.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TestRunner">
       <HintPath>Library\UnityAssemblies\UnityEngine.TestRunner.dll</HintPath>
@@ -70,27 +82,68 @@
     <Reference Include="UnityEngine.Timeline">
       <HintPath>Library\UnityAssemblies\UnityEngine.Timeline.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.Timeline">
+      <HintPath>Library\UnityAssemblies\UnityEditor.Timeline.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.TreeEditor">
+      <HintPath>Library\UnityAssemblies\UnityEditor.TreeEditor.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.Analytics">
       <HintPath>Library\UnityAssemblies\UnityEngine.Analytics.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.Analytics">
+      <HintPath>Library\UnityAssemblies\UnityEditor.Analytics.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.HoloLens">
+      <HintPath>Library\UnityAssemblies\UnityEditor.HoloLens.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.HoloLens">
       <HintPath>Library\UnityAssemblies\UnityEngine.HoloLens.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.Purchasing">
+      <HintPath>Library\UnityAssemblies\UnityEditor.Purchasing.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.VR">
+      <HintPath>Library\UnityAssemblies\UnityEditor.VR.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.Graphs">
+      <HintPath>Library\UnityAssemblies\UnityEditor.Graphs.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.Android.Extensions">
+      <HintPath>Library\UnityAssemblies\UnityEditor.Android.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.WebGL.Extensions">
+      <HintPath>Library\UnityAssemblies\UnityEditor.WebGL.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.WindowsStandalone.Extensions">
+      <HintPath>Library\UnityAssemblies\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
+      <HintPath>Library\UnityAssemblies\SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
     <Reference Include="websocket-sharp">
       <HintPath>Assets\AirConsole\plugins\websocket-sharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Plugins\Pixelplacement\iTween\iTween.cs" />
-    <Compile Include="Assets\Plugins\Pixelplacement\iTween\Sample\MoveSample.cs" />
-    <Compile Include="Assets\Plugins\Pixelplacement\iTween\Sample\RotateSample.cs" />
-    <Compile Include="Assets\Plugins\Pixelplacement\iTween\Sample\SampleInfo.cs" />
+    <ProjectReference Include="ggj2018.unity.CSharp.csproj">
+      <Project>{9750CCD7-4FC9-B6A5-E265-823D0C074A34}</Project>
+      <Name>ggj2018.unity.CSharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="ggj2018.unity.CSharp.Plugins.csproj">
+      <Project>{372D3DBE-2797-64B9-1B68-2FB32BE8139C}</Project>
+      <Name>ggj2018.unity.CSharp.Plugins</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Assets\Plugins\Moments-master\Moments Recorder\Scripts\Editor\MinDrawer.cs" />
+    <Compile Include="Assets\Plugins\Moments-master\Moments Recorder\Scripts\Editor\RecorderEditor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AirConsole\README.txt" />
     <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
+    <None Include="Assets\Plugins\Moments-master\LICENSE.txt" />
     <None Include="Assets\Plugins\Pixelplacement\iTween\ReadMe!\ReadMe!.txt" />
-    <None Include="Assets\Shaders\CarShader.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

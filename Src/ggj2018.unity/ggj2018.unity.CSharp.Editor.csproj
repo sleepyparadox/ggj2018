@@ -147,6 +147,7 @@
     <None Include="Assets\AirConsole\README.txt" />
     <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
     <None Include="Assets\Plugins\Pixelplacement\iTween\ReadMe!\ReadMe!.txt" />
+    <None Include="Assets\Shaders\CarShader.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

@@ -6,48 +6,39 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
+    [Serializable]
     public class Lane
     {
+        public static Vector3 Forward = new Vector3(0, 0, 1);
         public Vector3 Start;
         public Vector3 End;
-        public Vector3 Direction;
+        public List<Car> Cars = new List<Car>();
+        public Level Level;
 
-        public Lane(Transform t)
+        public Lane(Level level, Transform t)
         {
             Start = t.TransformPoint(new Vector3(0, 0, -0.5f));
-            End = t.TransformPoint(new Vector3(0, 0, 0.5f));
-            Direction = t.forward;
+            End = Start + (Forward * level.LaneLength);
+            Level = level;
+
+            SpawnDefaultCars();
         }
 
-        public Vector3 Clamp(Vector3 point)
+        public void SpawnDefaultCars()
         {
-            Debug.DrawLine(Start + Vector3.up, End, Color.white);
-            Debug.DrawLine(Start + Vector3.up, Start + Vector3.up + Direction, Color.magenta);
-
-            if (Vector3.Dot((point - Start).normalized, Direction) >= 0)
+            for (var position = 0f; position < Level.LaneLength; position += 5f)
             {
-                // forward
-
-                if ((Start - point).sqrMagnitude > (Start - End).sqrMagnitude)
-                {
-                    // gone past
-                    // loop back to start
-
-                    Debug.DrawLine(point, point + new Vector3(0, 10, 0), Color.red, 10f);
-
-                    return Start;
-                }
-                else
-                {
-                    // still within line
-                    return point;
-                }
+                var car = new Car(this, position);
+                Cars.Add(car);
             }
-            else
+        }
+
+        public void Update()
+        {
+            foreach (var car in Cars)
             {
-                // backing off too far
-                Debug.DrawLine(point, point + new Vector3(0, 10, 0), Color.red, 10f);
-                return Start;
+                car.Update(CarParticles.S.ParticleCount);
+                CarParticles.S.ParticleCount++;
             }
         }
     }

@@ -10,7 +10,7 @@ namespace Assets.Scripts
     {
         public Device Device;
 
-        public Vector3 Position;
+        public float Position;
 
         public float MaxSpeed = 10;
         public float Acceleration = 100;
@@ -18,23 +18,39 @@ namespace Assets.Scripts
         public float CarSpeed;
         public Lane Lane;
 
-        public void Reset()
+        public Car(Lane lane, float position)
         {
-            Position = Lane.Start;
+            Lane = lane;
+            Position = position;
         }
 
         public void Update(int particleId)
         {
-            var targetSpeed = Device.Input.Speed * MaxSpeed;
+            float targetSpeed;
+
+            if(Device != null)
+            {
+                // Button
+                targetSpeed = Device.Input.Speed * MaxSpeed;
+            }
+            else
+            {
+                // AI
+                targetSpeed = 1 * MaxSpeed;
+            }
+
             CarSpeed = Mathf.Lerp(CarSpeed, targetSpeed, Acceleration * Time.deltaTime);
 
-            var targetPos = Position + ( Lane.Direction * CarSpeed * Time.deltaTime);
-            Position = Lane.Clamp(targetPos);
+            var targetPos = Position + ( CarSpeed * Time.deltaTime);
+            if (targetPos < 0 || targetPos > Lane.Level.LaneLength)
+                targetPos = 0f;
 
-            CarParticles.S.Particles[particleId].position = Position;
+            Position = targetPos;
+
+            CarParticles.S.Particles[particleId].startColor = Device != null ? Device.Color : Color.grey;
+            CarParticles.S.Particles[particleId].position = Lane.Start + (Lane.Forward * Position);
             CarParticles.S.Particles[particleId].remainingLifetime = 10f;
             CarParticles.S.Particles[particleId].startSize = 1f;
-
         }
     }
 }

@@ -19,10 +19,13 @@ namespace Assets.Scripts
 
         void Start()
         {
-            AirConsole.instance.onConnect += OnConnect;
-            AirConsole.instance.onDisconnect += OnDisconnect;
-            AirConsole.instance.onMessage += OnMessage;
-
+            if(AirConsole.instance != null)
+            {
+                AirConsole.instance.onConnect += OnConnect;
+                AirConsole.instance.onDisconnect += OnDisconnect;
+                AirConsole.instance.onMessage += OnMessage;
+            }
+          
             TinyCoro.SpawnNext(Run);
         }
 

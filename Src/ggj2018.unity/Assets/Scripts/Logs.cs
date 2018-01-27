@@ -29,9 +29,14 @@ namespace Assets.Scripts
                 _logs.RemoveAt(_logs.Count - 1);
         }
 
+        void Update() { /* Get enable toggle */ }
+
         void OnGUI()
         {
-            GUI.Window(0, new Rect(0, 0, Screen.width, Screen.height), DrawLogs, "Logs");
+            if(this.gameObject.activeInHierarchy)
+            {
+                GUI.Window(0, new Rect(0, 0, Screen.width, Screen.height), DrawLogs, "Logs");
+            }
         }
 
         void DrawLogs(int id)

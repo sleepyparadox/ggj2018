@@ -9,18 +9,21 @@ namespace Assets.Scripts
 {
     public class Level : MonoBehaviour
     {
-        public List<Transform> LaneObjects;
-        public Transform CarsParent;
+        public Transform LaneParent;
+        public Transform TrafficLightParent;
+
+        public float LaneLength = 10;
 
         List<Lane> _lanes = new List<Lane>();
         Dictionary<Device, Car> _cars = new Dictionary<Device, Car>();
 
         void Awake()
         {
-            foreach (var laneObject in LaneObjects)
+            for (int i = 0; i < LaneParent.childCount; i++)
             {
-                _lanes.Add(new Lane(laneObject));
-                laneObject.gameObject.SetActive(false);
+                var laneChild = LaneParent.GetChild(i);
+                _lanes.Add(new Lane(this, laneChild));
+                laneChild.gameObject.SetActive(false);
             }
         }
 
@@ -28,34 +31,29 @@ namespace Assets.Scripts
         {
             while(true)
             {
-                RespawnCars();
-                UpdateCars();
+                // Todo give players cars
+                
+                // Update car particles
+                CarParticles.S.ParticleCount = 0;
+                foreach (var lane in _lanes)
+                    lane.Update();
+
                 yield return null;
             }
         }
-
-        void RespawnCars()
+        
+        void OnDrawGizmos()
         {
-            foreach (var device in MainApp.S.Devices.Values)
+            for (int i = 0; i < LaneParent.childCount; i++)
             {
-                if (_cars.ContainsKey(device))
-                    continue;
-
-                var car = new Car();
-                car.Device = device;
-                car.Lane = _lanes[UnityEngine.Random.Range(0, _lanes.Count)];
-                car.Reset();
-                _cars.Add(device, car);
+                var laneChild = LaneParent.GetChild(i);
+                Debug.DrawLine(laneChild.position, laneChild.position + (Lane.Forward * LaneLength) , Color.green);
             }
-        }
 
-        void UpdateCars()
-        {
-            CarParticles.S.ParticleCount = 0;
-            foreach (var car in _cars.Values)
+            for (int i = 0; i < TrafficLightParent.childCount; i++)
             {
-                car.Update(CarParticles.S.ParticleCount);
-                CarParticles.S.ParticleCount++;
+                var trafficLightChild = TrafficLightParent.GetChild(i);
+                Debug.DrawLine(trafficLightChild.position, trafficLightChild.position + (Vector3.up * LaneLength), Color.red);
             }
         }
     }
