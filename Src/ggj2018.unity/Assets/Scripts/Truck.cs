@@ -11,7 +11,8 @@ namespace Assets.Scripts
         public const float Width = 2;
         public const float Length = 8;
         public const float SpawnLength = Length * 5;
-        public const float ThreeSecondRule = Length * 5;
+        public const float ThreeSecondRule = Length * 2;
+        public const float OneSecondRule = Length * 0.5f;
 
         Color AIColor;
 
@@ -42,8 +43,15 @@ namespace Assets.Scripts
             {
                 var shouldBrake = nextTruck != null && Position + ThreeSecondRule > nextTruck.Position;
 
+                var lightCheckStart = Lane.Start.x + Position;
+                var lightCheckEnd = Lane.Start.x + Position + OneSecondRule;
+
+                var readLightAhead = Lane.Level.TrafficLights.Any(t => t.Mode != TrafficMode.TruckGo
+                                                                    && t.transform.position.x >= lightCheckStart
+                                                                    && t.transform.position.x <= lightCheckEnd);
+
                 // AI
-                if (shouldBrake)
+                if (shouldBrake || readLightAhead)
                     targetSpeed = 0f;
                 else
                     targetSpeed = 1f * MaxSpeed;

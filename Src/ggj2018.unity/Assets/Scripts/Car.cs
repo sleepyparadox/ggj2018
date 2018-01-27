@@ -11,7 +11,8 @@ namespace Assets.Scripts
         public const float Width = 2;
         public const float Length = 4;
         public const float SpawnLength = Length + 6f;
-        public const float ThreeSecondRule = Length * 1.5f;
+        public const float ThreeSecondRule = Length * 2f;
+        public const float OneSecondRule = Length * 0.5f;
 
         public Device Device;
 
@@ -24,9 +25,6 @@ namespace Assets.Scripts
         public CarLane Lane;
 
         Color AIColor;
-        float AIBreakElapsed;
-        float AIBreakFor;
-        float AiBreakCycle;
 
         float HurtFor = 0f;
         const float MaxHurtFor = 0.25f;
@@ -41,13 +39,6 @@ namespace Assets.Scripts
         {
             Lane = lane;
             Position = position;
-
-            // Ai breaking
-            var aiBrakeFrequence = UnityEngine.Random.Range(0f, 1f);
-
-            AiBreakCycle = Mathf.Lerp(2.4f, 12f, aiBrakeFrequence);
-            AIBreakFor = Mathf.Lerp(1f, 0.2f, aiBrakeFrequence);
-            AIBreakElapsed = AIBreakFor;
 
             AIColor = Color.Lerp(Color.black, Color.white, UnityEngine.Random.Range(0.3f, 0.7f));
         }
@@ -72,16 +63,18 @@ namespace Assets.Scripts
             }
             else
             {
-                var shouldBrake = nextCar != null && Position + ThreeSecondRule > nextCar.Position;
+                var shouldBrake = nextCar != null && Position + ThreeSecondRule > nextCar.Position && nextCar.KillingDt.HasValue == false;
                 var hurt = HurtFor > 0f;
 
-                AIBreakElapsed += Time.deltaTime;
-                if (AIBreakElapsed > AiBreakCycle)
-                    AIBreakElapsed -= AiBreakCycle;
-                var aiBraking = AIBreakElapsed < AIBreakFor;
+                var lightCheckStart = Lane.Start.z + Position;
+                var lightCheckEnd = Lane.Start.z + Position + OneSecondRule;
+
+                var readLightAhead = Lane.Level.TrafficLights.Any(t => t.Mode != TrafficMode.CarGo
+                                                                    && t.transform.position.z >= lightCheckStart
+                                                                    && t.transform.position.z <= lightCheckEnd);
 
                 // AI
-                if (shouldBrake || hurt || aiBraking)
+                if (shouldBrake || hurt || readLightAhead)
                     targetSpeed =  0f;
                 else
                     targetSpeed = 1f * MaxSpeed;
@@ -106,7 +99,8 @@ namespace Assets.Scripts
             }
 
             var color = Device != null ? Device.Color : AIColor;
-            if(HurtFor > 0f)
+
+            if (HurtFor > 0f)
             {
                 HurtFor -= Time.deltaTime;
                 color = Color.Lerp(color, Color.red, HurtFor / MaxHurtFor);
@@ -129,8 +123,6 @@ namespace Assets.Scripts
             KillingDt += Time.deltaTime;
             var normalizedDeath = Mathf.Clamp01(KillingDt.Value / MaxKillingDuration);
             var sineDeath = Mathf.Sin(normalizedDeath * Mathf.PI / 2f);
-
-            var pos = Position - (BounceBackDist * sineDeath);
 
             var lanePos = Lane.Start + (CarLane.Forward * Position);
 

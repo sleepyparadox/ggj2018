@@ -15,16 +15,11 @@ namespace Assets.Scripts
         public Color Color;
         public DeviceRole Role { get; private set;}
 
-        static Color[] RandomColors = new Color[]
-        {
-            Color.red, Color.blue, Color.green
-        };
-
         public Device(int deviceId)
         {
             DeviceId = deviceId;
             Input = new InputMap();
-            Color = RandomColors[UnityEngine.Random.Range(0, RandomColors.Length)];
+            Color = Color.Lerp(Color.blue, Color.green, UnityEngine.Random.Range(0f, 1f));
         }
 
         public void SetRole(DeviceRole role)

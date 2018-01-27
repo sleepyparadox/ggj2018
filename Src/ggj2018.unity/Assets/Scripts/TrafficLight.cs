@@ -17,12 +17,14 @@ namespace Assets.Scripts
 
         public void SetMode(TrafficMode mode)
         {
+            Mode = mode;
             if (mode == TrafficMode.CarGo)
                 LightRender.sharedMaterial = GreenMaterial;
             if ( mode == TrafficMode.CarSlow)
                 LightRender.sharedMaterial = YellowMaterial;
             if (mode == TrafficMode.TruckGo || mode == TrafficMode.TruckSlow)
                 LightRender.sharedMaterial = RedMaterial;
+            gameObject.name = mode.ToString();
         }
     }
 
