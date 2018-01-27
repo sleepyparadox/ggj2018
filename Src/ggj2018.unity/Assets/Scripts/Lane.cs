@@ -15,30 +15,37 @@ namespace Assets.Scripts
         public List<Car> Cars = new List<Car>();
         public Level Level;
 
+        const int MaxCars = 20;
+
         public Lane(Level level, Transform t)
         {
             Start = t.TransformPoint(new Vector3(0, 0, -0.5f));
             End = Start + (Forward * level.LaneLength);
             Level = level;
-
-            SpawnDefaultCars();
-        }
-
-        public void SpawnDefaultCars()
-        {
-            for (var position = 0f; position < Level.LaneLength; position += 5f)
-            {
-                var car = new Car(this, position);
-                Cars.Add(car);
-            }
         }
 
         public void Update()
         {
+            // Spawn Cars
+            if (Cars.Count < MaxCars
+                && ((Cars.Count == 0 || Cars.First().Position > Car.SpawnLength)))
+            {
+                var car = new Car(this, 0);
+                Cars.Insert(0, car);
+            }
+
+            // Update Cars
             foreach (var car in Cars)
             {
                 car.Update(CarParticles.S.ParticleCount);
                 CarParticles.S.ParticleCount++;
+            }
+
+            // Cleanup Cars
+            var carsToRemove = Cars.Where(c => c.Position > Level.LaneLength).ToList();
+            foreach (var car in carsToRemove)
+            {
+                Cars.Remove(car);
             }
         }
     }
