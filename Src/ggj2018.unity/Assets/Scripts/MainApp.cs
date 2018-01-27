@@ -34,13 +34,22 @@ namespace Assets.Scripts
         {
             while (true)
             {
+                var lobby = TinyCoro.SpawnNext(Canvas.S.RunLobby);
+                yield return TinyCoro.Join(lobby);
+
                 CurrentLevel = Level.Instantiate<Level>(Prefabs.S.Level1);
+
 
                 var runLevel = TinyCoro.SpawnNext(CurrentLevel.Run);
                 yield return TinyCoro.Join(runLevel);
 
                 Level.Destroy(CurrentLevel);
                 CurrentLevel = null;
+
+
+                var winner = TinyCoro.SpawnNext(Canvas.S.RunWinner);
+                yield return TinyCoro.Join(winner);
+
             }
         }
 

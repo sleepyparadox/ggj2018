@@ -64,7 +64,9 @@ namespace Assets.Scripts
 
         public IEnumerator Run()
         {
-            while(true)
+            Canvas.S.SetScreen(Screen.Game);
+
+            while (true)
             {
                 // Update Traffic modes
                 _trafficModeElapsed += Time.deltaTime;

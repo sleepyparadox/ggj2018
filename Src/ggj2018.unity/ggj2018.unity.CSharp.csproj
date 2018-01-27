@@ -249,6 +249,7 @@
     <Compile Include="Assets\AirConsole\scripts\DebugLevel.cs" />
     <Compile Include="Assets\AirConsole\scripts\Settings.cs" />
     <Compile Include="Assets\AirConsole\scripts\WebsocketListener.cs" />
+    <Compile Include="Assets\Scripts\Canvas.cs" />
     <Compile Include="Assets\Scripts\Car.cs" />
     <Compile Include="Assets\Scripts\CarParticles.cs" />
     <Compile Include="Assets\Scripts\Device.cs" />

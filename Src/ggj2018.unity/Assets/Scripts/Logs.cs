@@ -35,7 +35,7 @@ namespace Assets.Scripts
         {
             if(this.gameObject.activeInHierarchy)
             {
-                GUI.Window(0, new Rect(0, 0, Screen.width, Screen.height), DrawLogs, "Logs");
+                GUI.Window(0, new Rect(0, 0, UnityEngine.Screen.width, UnityEngine.Screen.height), DrawLogs, "Logs");
             }
         }
 
