@@ -10,7 +10,7 @@ namespace Assets.Scripts
     {
         public static Prefabs S { get; private set; }
 
-        public Car Car;
+        public Truck Truck;
         public Level Level1;
 
         void Awake()

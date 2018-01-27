@@ -11,10 +11,12 @@ namespace Assets.Scripts
     {
         public Transform LaneParent;
         public Transform TrafficLightParent;
+        public Transform TrucksParent;
 
         public float LaneLength = 100;
 
-        List<Lane> _lanes = new List<Lane>();
+        List<CarLane> _carLanes = new List<CarLane>();
+        List<TruckLane> _truckLanes = new List<TruckLane>();
         Dictionary<Device, Car> _cars = new Dictionary<Device, Car>();
 
         void Awake()
@@ -22,7 +24,14 @@ namespace Assets.Scripts
             for (int i = 0; i < LaneParent.childCount; i++)
             {
                 var laneChild = LaneParent.GetChild(i);
-                _lanes.Add(new Lane(this, laneChild));
+                _carLanes.Add(new CarLane(this, laneChild));
+                laneChild.gameObject.SetActive(false);
+            }
+
+            for (int i = 0; i < TrucksParent.childCount; i++)
+            {
+                var laneChild = TrucksParent.GetChild(i);
+                _truckLanes.Add(new TruckLane(this, laneChild));
                 laneChild.gameObject.SetActive(false);
             }
         }
@@ -35,7 +44,12 @@ namespace Assets.Scripts
                 
                 // Update car particles
                 CarParticles.S.ParticleCount = 0;
-                foreach (var lane in _lanes)
+                foreach (var lane in _carLanes)
+                    lane.Update();
+
+                // Update truck particles
+                TruckParticles.S.ParticleCount = 0;
+                foreach (var lane in _truckLanes)
                     lane.Update();
 
                 RepopulateDevices();
@@ -59,7 +73,7 @@ namespace Assets.Scripts
                     continue;
 
                 const float MinDistance = Car.SpawnLength * 3f;
-                var suitableHost = _lanes.SelectMany(l => l.Cars)
+                var suitableHost = _carLanes.SelectMany(l => l.Cars)
                     .OrderBy(c => c.Position)
                     .Where(c => c.Position >= MinDistance && c.Device == null)
                     .FirstOrDefault();
@@ -93,7 +107,13 @@ namespace Assets.Scripts
             for (int i = 0; i < LaneParent.childCount; i++)
             {
                 var laneChild = LaneParent.GetChild(i);
-                Debug.DrawLine(laneChild.position, laneChild.position + (Lane.Forward * LaneLength) , Color.green);
+                Debug.DrawLine(laneChild.position, laneChild.position + (CarLane.Forward * LaneLength) , Color.green);
+            }
+
+            for (int i = 0; i < TrucksParent.childCount; i++)
+            {
+                var truckChild = TrucksParent.GetChild(i);
+                Debug.DrawLine(truckChild.position, truckChild.position + (Vector3.right * LaneLength), Color.red);
             }
 
             for (int i = 0; i < TrafficLightParent.childCount; i++)
@@ -101,6 +121,8 @@ namespace Assets.Scripts
                 var trafficLightChild = TrafficLightParent.GetChild(i);
                 Debug.DrawLine(trafficLightChild.position, trafficLightChild.position + (Vector3.up * LaneLength), Color.red);
             }
+
+           
         }
     }
 }

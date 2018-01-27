@@ -19,8 +19,8 @@ namespace Assets.Scripts
         const float MaxSpeed = 10;
         const float Acceleration = 10;
 
-        public float CarSpeed;
-        public Lane Lane;
+        public float CurrentSpeed;
+        public CarLane Lane;
 
         Color AIColor;
         float AIBreakElapsed;
@@ -33,7 +33,7 @@ namespace Assets.Scripts
 
         public object Log { get; private set; }
 
-        public Car(Lane lane, float position)
+        public Car(CarLane lane, float position)
         {
             Lane = lane;
             Position = position;
@@ -77,9 +77,9 @@ namespace Assets.Scripts
                     targetSpeed = 1f * MaxSpeed;
             }
 
-            CarSpeed = Mathf.Lerp(CarSpeed, targetSpeed, Acceleration * Time.deltaTime);
+            CurrentSpeed = Mathf.Lerp(CurrentSpeed, targetSpeed, Acceleration * Time.deltaTime);
 
-            Position += CarSpeed * Time.deltaTime;
+            Position += CurrentSpeed * Time.deltaTime;
             if (Position < 0)
                 Position = 0f;
 
@@ -87,9 +87,9 @@ namespace Assets.Scripts
             {
                 nextCar.Position = Position + Length;
 
-                var sharedSpeed = (CarSpeed + nextCar.CarSpeed) / 2f;
-                CarSpeed = sharedSpeed;
-                nextCar.CarSpeed = sharedSpeed;
+                var sharedSpeed = (CurrentSpeed + nextCar.CurrentSpeed) / 2f;
+                CurrentSpeed = sharedSpeed;
+                nextCar.CurrentSpeed = sharedSpeed;
 
                 HurtFor = MaxHurtFor;
                 //nextCar.HurtFor = MaxHurtFor;
@@ -103,7 +103,7 @@ namespace Assets.Scripts
             }
 
             CarParticles.S.Particles[particleId].startColor = color;
-            CarParticles.S.Particles[particleId].position = Lane.Start + (Lane.Forward * Position);
+            CarParticles.S.Particles[particleId].position = Lane.Start + (CarLane.Forward * Position);
             CarParticles.S.Particles[particleId].remainingLifetime = 10f;
             CarParticles.S.Particles[particleId].startSize = 1f;
         }
