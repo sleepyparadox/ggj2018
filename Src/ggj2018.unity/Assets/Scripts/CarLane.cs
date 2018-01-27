@@ -43,7 +43,7 @@ namespace Assets.Scripts
             }
 
             // Cleanup Cars
-            var carsToRemove = Cars.Where(c => c.Position > Level.LaneLength).ToList();
+            var carsToRemove = Cars.Where(c => c.Position > Level.LaneLength || c.Dead).ToList();
             foreach (var car in carsToRemove)
             {
                 Cars.Remove(car);

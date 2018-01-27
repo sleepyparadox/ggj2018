@@ -15,7 +15,7 @@ namespace Assets.Scripts
         public List<Truck> Trucks;
         public Level Level;
 
-        const int MaxTrucks = 20;
+        const int MaxTrucks = 6;
 
         public TruckLane(Level level, Transform t)
         {

@@ -10,7 +10,7 @@ namespace Assets.Scripts
     {
         public const float Width = 2;
         public const float Length = 8;
-        public const float SpawnLength = Length + 6f;
+        public const float SpawnLength = Length + 12f;
         public const float ThreeSecondRule = Length * 1.5f;
 
         Color AIColor;
@@ -84,7 +84,7 @@ namespace Assets.Scripts
                     if (distToCar > CarHitDist)
                         continue;
 
-                    car.Hurt();
+                    car.Kill();
                 }
             }
 

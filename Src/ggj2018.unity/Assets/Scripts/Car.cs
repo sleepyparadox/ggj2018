@@ -28,9 +28,12 @@ namespace Assets.Scripts
         float AIBreakFor;
         float AiBreakCycle;
 
-
         float HurtFor = 0f;
         const float MaxHurtFor = 0.25f;
+
+        float? KillingDt;
+        const float MaxKillingDuration = 1f;
+        public bool Dead { get; private set; }
 
         public object Log { get; private set; }
 
@@ -51,6 +54,12 @@ namespace Assets.Scripts
 
         public void Update(int particleId)
         {
+            if(KillingDt.HasValue)
+            {
+                KillingUpdate(particleId);
+                return;
+            }
+
             var nextIndex = Lane.Cars.IndexOf(this) + 1;
             var nextCar = nextIndex < Lane.Cars.Count ? Lane.Cars[nextIndex] : null;
 
@@ -107,11 +116,52 @@ namespace Assets.Scripts
             CarParticles.S.Particles[particleId].position = Lane.Start + (CarLane.Forward * Position);
             CarParticles.S.Particles[particleId].remainingLifetime = 10f;
             CarParticles.S.Particles[particleId].startSize = 1f;
+            CarParticles.S.Particles[particleId].rotation3D = Vector3.zero;
+
+        }
+
+        void KillingUpdate(int particleId)
+        {
+            const float JumpHeight = 15f;
+            const float SpinDist = 360 * 4f;
+            const float BounceBackDist = MaxSpeed * MaxKillingDuration * 2f;
+
+            KillingDt += Time.deltaTime;
+            var normalizedDeath = Mathf.Clamp01(KillingDt.Value / MaxKillingDuration);
+            var sineDeath = Mathf.Sin(normalizedDeath * Mathf.PI / 2f);
+
+            var pos = Position - (BounceBackDist * sineDeath);
+
+            var lanePos = Lane.Start + (CarLane.Forward * Position);
+
+            var jumpOffset = (Vector3.up * JumpHeight * sineDeath);
+            var bounceBack = (CarLane.Forward * -1f * BounceBackDist * sineDeath);
+
+            CarParticles.S.Particles[particleId].position = lanePos + jumpOffset + bounceBack;
+
+            CarParticles.S.Particles[particleId].startColor = Color.red;
+            CarParticles.S.Particles[particleId].remainingLifetime = 10f;
+            CarParticles.S.Particles[particleId].startSize = 1f - sineDeath;
+            CarParticles.S.Particles[particleId].rotation3D = new Vector3(0, sineDeath * SpinDist, 0);
+
+            if (KillingDt > MaxKillingDuration)
+            {
+                Dead = true;
+                return;
+            }
         }
 
         public void Hurt()
         {
             HurtFor = MaxHurtFor;
+        }
+
+        public void Kill()
+        {
+            if (KillingDt.HasValue)
+                return;
+
+            KillingDt = 0f;   
         }
     }
 }
