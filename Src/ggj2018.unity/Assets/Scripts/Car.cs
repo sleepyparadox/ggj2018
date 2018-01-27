@@ -8,6 +8,7 @@ namespace Assets.Scripts
 {
     public class Car 
     {
+        public const float Width = 2;
         public const float Length = 4;
         public const float SpawnLength = Length + 6f;
         public const float ThreeSecondRule = Length * 1.5f;
@@ -91,8 +92,8 @@ namespace Assets.Scripts
                 CurrentSpeed = sharedSpeed;
                 nextCar.CurrentSpeed = sharedSpeed;
 
-                HurtFor = MaxHurtFor;
-                //nextCar.HurtFor = MaxHurtFor;
+                Hurt();
+                //nextCar.Hurt();
             }
 
             var color = Device != null ? Device.Color : AIColor;
@@ -106,6 +107,11 @@ namespace Assets.Scripts
             CarParticles.S.Particles[particleId].position = Lane.Start + (CarLane.Forward * Position);
             CarParticles.S.Particles[particleId].remainingLifetime = 10f;
             CarParticles.S.Particles[particleId].startSize = 1f;
+        }
+
+        public void Hurt()
+        {
+            HurtFor = MaxHurtFor;
         }
     }
 }

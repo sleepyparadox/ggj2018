@@ -15,8 +15,8 @@ namespace Assets.Scripts
 
         public float LaneLength = 100;
 
-        List<CarLane> _carLanes = new List<CarLane>();
-        List<TruckLane> _truckLanes = new List<TruckLane>();
+        public List<CarLane> CarLanes = new List<CarLane>();
+        public List<TruckLane> TruckLanes = new List<TruckLane>();
         Dictionary<Device, Car> _cars = new Dictionary<Device, Car>();
 
         void Awake()
@@ -24,14 +24,14 @@ namespace Assets.Scripts
             for (int i = 0; i < LaneParent.childCount; i++)
             {
                 var laneChild = LaneParent.GetChild(i);
-                _carLanes.Add(new CarLane(this, laneChild));
+                CarLanes.Add(new CarLane(this, laneChild));
                 laneChild.gameObject.SetActive(false);
             }
 
             for (int i = 0; i < TrucksParent.childCount; i++)
             {
                 var laneChild = TrucksParent.GetChild(i);
-                _truckLanes.Add(new TruckLane(this, laneChild));
+                TruckLanes.Add(new TruckLane(this, laneChild));
                 laneChild.gameObject.SetActive(false);
             }
         }
@@ -44,12 +44,12 @@ namespace Assets.Scripts
                 
                 // Update car particles
                 CarParticles.S.ParticleCount = 0;
-                foreach (var lane in _carLanes)
+                foreach (var lane in CarLanes)
                     lane.Update();
 
                 // Update truck particles
                 TruckParticles.S.ParticleCount = 0;
-                foreach (var lane in _truckLanes)
+                foreach (var lane in TruckLanes)
                     lane.Update();
 
                 RepopulateDevices();
@@ -73,7 +73,7 @@ namespace Assets.Scripts
                     continue;
 
                 const float MinDistance = Car.SpawnLength * 3f;
-                var suitableHost = _carLanes.SelectMany(l => l.Cars)
+                var suitableHost = CarLanes.SelectMany(l => l.Cars)
                     .OrderBy(c => c.Position)
                     .Where(c => c.Position >= MinDistance && c.Device == null)
                     .FirstOrDefault();

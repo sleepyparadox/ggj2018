@@ -65,8 +65,32 @@ namespace Assets.Scripts
 
             }
 
+            var worldPos = Lane.Start + (TruckLane.Forward * Position);
+
+            // hit cars
+            foreach (var carLane in Lane.Level.CarLanes)
+            {
+                var distToLane = Mathf.Abs(worldPos.x - carLane.Start.x);
+                const float CarLaneTouchDist = (Truck.Length / 2f) + (Car.Width / 2f);
+
+                if (distToLane > CarLaneTouchDist)
+                    continue;
+
+                const float CarHitDist = (Car.Length / 2f) + (Truck.Width / 2f);
+
+                foreach (var car in carLane.Cars)
+                {
+                    var distToCar = Mathf.Abs(worldPos.z - (carLane.Start.z + car.Position));
+                    if (distToCar > CarHitDist)
+                        continue;
+
+                    car.Hurt();
+                }
+            }
+
+
             TruckParticles.S.Particles[particleId].startColor = AIColor;
-            TruckParticles.S.Particles[particleId].position = Lane.Start + (TruckLane.Forward * Position);
+            TruckParticles.S.Particles[particleId].position = worldPos;
             TruckParticles.S.Particles[particleId].remainingLifetime = 10f;
             TruckParticles.S.Particles[particleId].startSize = 1f;
         }
