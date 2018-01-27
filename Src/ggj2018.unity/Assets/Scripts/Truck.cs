@@ -10,14 +10,14 @@ namespace Assets.Scripts
     {
         public const float Width = 2;
         public const float Length = 8;
-        public const float SpawnLength = Length + 12f;
-        public const float ThreeSecondRule = Length * 1.5f;
+        public const float SpawnLength = Length * 5;
+        public const float ThreeSecondRule = Length * 5;
 
         Color AIColor;
 
         public float Position;
 
-        const float MaxSpeed = 10;
+        const float MaxSpeed = 20;
         const float Acceleration = 10;
 
         public float CurrentSpeed;
