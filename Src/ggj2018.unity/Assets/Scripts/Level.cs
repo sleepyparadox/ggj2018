@@ -17,30 +17,62 @@ namespace Assets.Scripts
 
         public List<CarLane> CarLanes = new List<CarLane>();
         public List<TruckLane> TruckLanes = new List<TruckLane>();
+        public List<TrafficLight> TrafficLights = new List<TrafficLight>();
         Dictionary<Device, Car> _cars = new Dictionary<Device, Car>();
+
+        TrafficMode _trafficMode;
+        float _trafficModeElapsed;
+
+        const float MaxTimePerTrafficMode = 3f;
 
         void Awake()
         {
             for (int i = 0; i < LaneParent.childCount; i++)
             {
                 var laneChild = LaneParent.GetChild(i);
-                CarLanes.Add(new CarLane(this, laneChild));
                 laneChild.gameObject.SetActive(false);
+
+                CarLanes.Add(new CarLane(this, laneChild));
             }
 
             for (int i = 0; i < TrucksParent.childCount; i++)
             {
                 var laneChild = TrucksParent.GetChild(i);
-                TruckLanes.Add(new TruckLane(this, laneChild));
                 laneChild.gameObject.SetActive(false);
+
+                TruckLanes.Add(new TruckLane(this, laneChild));
             }
+
+            for (int i = 0; i < TrafficLightParent.childCount; i++)
+            {
+                var lightChild = TrafficLightParent.GetChild(i);
+                lightChild.gameObject.SetActive(false);
+
+                var light = TrafficLight.Instantiate<TrafficLight>(Prefabs.S.TrafficLight);
+                light.transform.position = lightChild.position;
+                TrafficLights.Add(light);
+            }
+        }
+
+        public void SetTrafficMode(TrafficMode mode)
+        {
+            _trafficMode = mode;
+            _trafficModeElapsed = 0f;
+            foreach (var light in TrafficLights)
+                light.SetMode(mode);
         }
 
         public IEnumerator Run()
         {
             while(true)
             {
-                // Todo give players cars
+                // Update Traffic modes
+                _trafficModeElapsed += Time.deltaTime;
+                if(_trafficModeElapsed > MaxTimePerTrafficMode)
+                {
+                    var nextMode = ((int)_trafficMode + 1) % (int)TrafficMode.COUNT;
+                    SetTrafficMode((TrafficMode)nextMode);
+                }
                 
                 // Update car particles
                 CarParticles.S.ParticleCount = 0;

@@ -17,19 +17,21 @@ namespace Assets.Scripts
 
         public void SetMode(TrafficMode mode)
         {
-            if (mode == TrafficMode.Go)
+            if (mode == TrafficMode.CarGo)
                 LightRender.sharedMaterial = GreenMaterial;
-            if (mode == TrafficMode.Slow)
+            if ( mode == TrafficMode.CarSlow)
                 LightRender.sharedMaterial = YellowMaterial;
-            if (mode == TrafficMode.Stop)
+            if (mode == TrafficMode.TruckGo || mode == TrafficMode.TruckSlow)
                 LightRender.sharedMaterial = RedMaterial;
         }
     }
 
     public enum TrafficMode
     {
-        Stop,
-        Slow,
-        Go
+        CarGo,
+        CarSlow,
+        TruckGo,
+        TruckSlow,
+        COUNT
     }
 }
