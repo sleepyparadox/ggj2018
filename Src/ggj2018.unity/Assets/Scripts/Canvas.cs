@@ -14,7 +14,10 @@ namespace Assets.Scripts
         public Transform GameScreen;
         public Transform WinnerScreen;
 
+
         public UnityEngine.UI.Text LobbyText;
+        public RectTransform LobbyIconSpace;
+
 
         public UnityEngine.UI.Text CarsScoreText;
         public UnityEngine.UI.Text ConductorScoreText;
@@ -23,11 +26,12 @@ namespace Assets.Scripts
         const int MinPlayersNeed = 2;
 
         bool _firstTimeLobby;
+        Dictionary<Device, PlayerIcon> _playerIcons = new Dictionary<Device, PlayerIcon>();
 
-        //const float FirstLobbyDuration = 60f;
-        //const float QuickLobbyDuration = 30f;
-        const float FirstLobbyDuration = 6f;
-        const float QuickLobbyDuration = 3f;
+        const float FirstLobbyDuration = 60f;
+        const float QuickLobbyDuration = 30f;
+        //const float FirstLobbyDuration = 6f;
+        //const float QuickLobbyDuration = 3f;
 
         void Awake()
         {
@@ -58,6 +62,7 @@ namespace Assets.Scripts
                     var needed = MinPlayersNeed - ReadyPlayers();
                     LobbyText.text = string.Format("{0} MORE PLAYERS NEEDED", needed);
 
+                    UpdatePlayerIcons();
                     yield return null;
                 }
 
@@ -69,6 +74,7 @@ namespace Assets.Scripts
                     var remaining = endAt - Time.time;
                     LobbyText.text = string.Format("STARTING {0}", remaining.ToString("00.0"));
 
+                    UpdatePlayerIcons();
                     yield return null;
                 }
 
@@ -80,6 +86,38 @@ namespace Assets.Scripts
 
                 // Done!
                 break;
+            }
+
+            foreach (var icon in _playerIcons.Values)
+                PlayerIcon.Destroy(icon.gameObject);
+            _playerIcons.Clear();
+        }
+
+        void UpdatePlayerIcons()
+        {
+            foreach (var device in MainApp.S.Devices.Values)
+            {
+                if (device.Connected == false
+                    || device.Role != DeviceRole.Ready
+                    || _playerIcons.ContainsKey(device))
+                    continue;
+
+                var icon = PlayerIcon.Instantiate<PlayerIcon>(Prefabs.S.PlayerIcon);
+                icon.transform.SetParent(LobbyIconSpace, false);
+                icon.transform.localPosition = new Vector3(UnityEngine.Random.Range(-100f, 100f), UnityEngine.Random.Range(-100f, 100f), 0);
+
+                icon.NameText.text = device.Name;
+                icon.ScoreText.text = device.Score.ToString();
+
+                icon.Space = LobbyIconSpace;
+                icon.IconsCollection = _playerIcons;
+
+                _playerIcons.Add(device, icon);
+            }
+
+            foreach (var icon in _playerIcons.Values)
+            {
+                icon.Update();
             }
         }
 

@@ -12,6 +12,7 @@ namespace Assets.Scripts
 
         public TrafficLight TrafficLight;
         public Level Level1;
+        public PlayerIcon PlayerIcon;
 
         void Awake()
         {

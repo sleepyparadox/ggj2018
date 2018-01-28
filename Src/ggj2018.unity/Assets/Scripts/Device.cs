@@ -16,6 +16,7 @@ namespace Assets.Scripts
         public DeviceRole Role { get; private set;}
         public string Name;
         public bool Ready;
+        public int Score;
 
         public Device(int deviceId)
         {

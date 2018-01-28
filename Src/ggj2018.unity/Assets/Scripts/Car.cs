@@ -156,7 +156,12 @@ namespace Assets.Scripts
                 return;
 
             if(Device != null)
+            {
                 Lane.Level.ConductorScore++;
+                var conductor = MainApp.S.Devices.Values.FirstOrDefault(d => d.Connected && d.Role == DeviceRole.Conductor);
+                if (conductor != null)
+                    conductor.Score++;
+            }
 
             KillingDt = 0f;
         }

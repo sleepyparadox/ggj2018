@@ -50,6 +50,7 @@ namespace Assets.Scripts
                 {
                     // Scored!
                     Level.CarScore++;
+                    car.Device.Score++;
                 }
 
                 Cars.Remove(car);

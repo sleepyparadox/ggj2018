@@ -257,6 +257,7 @@
     <Compile Include="Assets\Scripts\Level.cs" />
     <Compile Include="Assets\Scripts\Logs.cs" />
     <Compile Include="Assets\Scripts\MainApp.cs" />
+    <Compile Include="Assets\Scripts\PlayerIcon.cs" />
     <Compile Include="Assets\Scripts\Prefabs.cs" />
     <Compile Include="Assets\Scripts\TinyCoro\TinyCoro.cs" />
     <Compile Include="Assets\Scripts\TinyCoro\TinyCoroStatic.cs" />
