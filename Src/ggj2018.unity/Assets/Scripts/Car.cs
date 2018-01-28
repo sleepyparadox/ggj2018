@@ -37,12 +37,15 @@ namespace Assets.Scripts
 
         public int ValueOfCar { get { return Device != null ? 10 : 1; } }
 
+        public AudioClip HonkSfx;
+
         public Car(CarLane lane, float position)
         {
             Lane = lane;
             Position = position;
 
             AIColor = Color.Lerp(Color.black, Color.white, UnityEngine.Random.Range(0.3f, 0.7f));
+            HonkSfx = MainApp.S.AllHonksSfk[UnityEngine.Random.Range(0, MainApp.S.AllHonksSfk.Length)];
         }
 
         public void Update(int particleId)
@@ -108,12 +111,19 @@ namespace Assets.Scripts
                 color = Color.Lerp(color, Color.red, 0.2f);
             }
 
+
+
             CarParticles.S.Particles[particleId].startColor = color;
             CarParticles.S.Particles[particleId].position = Lane.Start + (CarLane.Forward * Position);
             CarParticles.S.Particles[particleId].remainingLifetime = 10f;
-            CarParticles.S.Particles[particleId].startSize = 1f;
+            CarParticles.S.Particles[particleId].startSize = GetHonkSize();
             CarParticles.S.Particles[particleId].rotation3D = Vector3.zero;
+        }
 
+        public void Honk()
+        {
+            HonkingDt = 0;
+            MainApp.S.AudioSource.PlayOneShot(HonkSfx);
         }
 
         void KillingUpdate(int particleId)
@@ -157,6 +167,8 @@ namespace Assets.Scripts
             if (KillingDt.HasValue)
                 return;
 
+            MainApp.S.AudioSource.PlayOneShot(MainApp.S.KillSfk);
+
             Lane.Level.ConductorScore += ValueOfCar;
 
             var conductor = MainApp.S.Devices.Values.FirstOrDefault(d => d.Connected && d.Role == DeviceRole.Conductor);
@@ -164,6 +176,25 @@ namespace Assets.Scripts
                 conductor.Score += ValueOfCar;
 
             KillingDt = 0f;
+        }
+
+        float? HonkingDt;
+        const float HonkingDuration = 0.5f;
+
+        float GetHonkSize()
+        {
+            if (HonkingDt .HasValue == false)
+                return 1f;
+
+            HonkingDt += Time.deltaTime;
+
+            var normalizedHonk = HonkingDt.Value / HonkingDuration;
+            var sineHonk = Mathf.Sin(normalizedHonk * Mathf.PI);
+
+            if (HonkingDt.Value > HonkingDuration)
+                HonkingDt = null;
+
+            return 1f + ( 1 * sineHonk);
         }
     }
 }

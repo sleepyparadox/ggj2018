@@ -21,7 +21,7 @@ namespace Assets.Scripts
         public List<TruckLane> TruckLanes = new List<TruckLane>();
         public List<TrafficLight> TrafficLights = new List<TrafficLight>();
 
-        Dictionary<Device, Car> _cars = new Dictionary<Device, Car>();
+        public Dictionary<Device, Car> Cars = new Dictionary<Device, Car>();
 
         TrafficMode _trafficMode;
         float _trafficModeElapsed;
@@ -73,6 +73,7 @@ namespace Assets.Scripts
         public IEnumerator Run()
         {
             Canvas.S.SetScreen(Screen.Game);
+            SetTrafficMode(TrafficMode.CarGo);
 
             // Choose a conductor
             var conductorChoices = MainApp.S.Devices.Values.Where(d => d.Connected && d.Role == DeviceRole.Ready)
@@ -126,14 +127,14 @@ namespace Assets.Scripts
         {
             foreach (var device in MainApp.S.Devices.Values)
             {
-                if(device.Connected == false && _cars.ContainsKey(device))
+                if(device.Connected == false && Cars.ContainsKey(device))
                 {
                     // Cleanup disconnected car
-                    _cars[device].Device = null;
-                    _cars.Remove(device);
+                    Cars[device].Device = null;
+                    Cars.Remove(device);
                 }
 
-                if (_cars.ContainsKey(device) || device.Connected == false || device.Role != DeviceRole.Ready)
+                if (Cars.ContainsKey(device) || device.Connected == false || device.Role != DeviceRole.Ready)
                     continue;
 
                 const float MinDistance = Car.SpawnLength * 3f;
@@ -155,18 +156,18 @@ namespace Assets.Scripts
 
                 suitableHost.Device = device;
                 device.SetRole(DeviceRole.Car);
-                _cars.Add(device, suitableHost);
+                Cars.Add(device, suitableHost);
             }
         }
 
         public void CarDeleted(Car car)
         {
-            if(_cars.Any(p => p.Value == car))
+            if(Cars.Any(p => p.Value == car))
             {
-                var pair = _cars.First(p => p.Value == car);
+                var pair = Cars.First(p => p.Value == car);
 
                 pair.Key.SetRole(DeviceRole.Ready);
-                _cars.Remove(pair.Key);
+                Cars.Remove(pair.Key);
             }
         }
 

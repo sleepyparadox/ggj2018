@@ -11,10 +11,10 @@ namespace Assets.Scripts
     {
         public static Canvas S { get; private set; }
 
-        const float FirstLobbyDuration = 60f;
-        const float QuickLobbyDuration = 30f;
-        //const float FirstLobbyDuration = 6f;
-        //const float QuickLobbyDuration = 3f;
+        //const float FirstLobbyDuration = 60f;
+        //const float QuickLobbyDuration = 30f;
+        const float FirstLobbyDuration = 6f;
+        const float QuickLobbyDuration = 3f;
 
         public Transform LobbyScreen;
         public Transform GameScreen;
@@ -145,8 +145,8 @@ namespace Assets.Scripts
             var conductor = MainApp.S.Devices.Values.FirstOrDefault(d => d.Connected && d.Role == DeviceRole.Conductor);
             var conductorName = conductor != null ? conductor.Name : "?";
 
-            WinnersCarText.text = string.Format("THE RESET\nSCORED {0}", carScore);
-            WinnersConductorText.text = string.Format("{0}\nSMASHED {1} CARS\nAS CONDUCTOR", conductorName, conductorScore);
+            WinnersCarText.text = string.Format("{0} CARS SCORED", carScore);
+            WinnersConductorText.text = string.Format("{0}\nSMASHED {1} CARS", conductorName, conductorScore);
         }
 
         public IEnumerator RunWinner()

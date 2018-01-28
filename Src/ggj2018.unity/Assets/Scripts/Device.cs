@@ -18,11 +18,14 @@ namespace Assets.Scripts
         public bool Ready;
         public int Score;
 
+        public float PlayerPitch;
         public Device(int deviceId)
         {
             DeviceId = deviceId;
             Input = new InputMap();
             Color = Color.Lerp(Color.blue, Color.green, UnityEngine.Random.Range(0f, 1f));
+
+            PlayerPitch = UnityEngine.Random.Range(0.8f, 1.2f);
         }
 
         public void SetRole(DeviceRole role)

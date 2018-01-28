@@ -13,6 +13,12 @@ namespace Assets.Scripts
         public Dictionary<int, Device> Devices = new Dictionary<int, Device>();
         public Level CurrentLevel;
 
+        public AudioSource AudioSource;
+
+        public AudioClip[] AllHonksSfk;
+        public AudioClip KillSfk;
+
+
         void Awake()
         {
             S = this;
@@ -110,6 +116,10 @@ namespace Assets.Scripts
 
         void OnHonk(Device device)
         {
+            if(CurrentLevel != null && CurrentLevel.Cars.ContainsKey(device))
+            {
+                CurrentLevel.Cars[device].Honk();
+            }
         }
 
         void OnMove(Device device, float acceleration)
