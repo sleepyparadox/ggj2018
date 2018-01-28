@@ -14,6 +14,8 @@ namespace Assets.Scripts
         public InputMap Input;
         public Color Color;
         public DeviceRole Role { get; private set;}
+        public string Name;
+        public bool Ready;
 
         public Device(int deviceId)
         {
@@ -50,6 +52,7 @@ namespace Assets.Scripts
     public enum DeviceRole
     {
         Wait,
+        Ready,
         Conductor,
         Car,
     }

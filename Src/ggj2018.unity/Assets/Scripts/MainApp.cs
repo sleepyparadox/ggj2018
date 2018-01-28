@@ -39,17 +39,19 @@ namespace Assets.Scripts
 
                 CurrentLevel = Level.Instantiate<Level>(Prefabs.S.Level1);
 
-
                 var runLevel = TinyCoro.SpawnNext(CurrentLevel.Run);
                 yield return TinyCoro.Join(runLevel);
 
-                Level.Destroy(CurrentLevel);
-                CurrentLevel = null;
-
+                foreach (var device in Devices.Values)
+                {
+                    device.SetRole(DeviceRole.Wait);
+                }
 
                 var winner = TinyCoro.SpawnNext(Canvas.S.RunWinner);
                 yield return TinyCoro.Join(winner);
 
+                Level.Destroy(CurrentLevel.gameObject);
+                CurrentLevel = null;
             }
         }
 
@@ -89,6 +91,9 @@ namespace Assets.Scripts
                 case "honk":
                     OnHonk(device);
                     break;
+                case "ready":
+                    OnReady(device, (string)message[DataKey]);
+                    break;
                 default:
                     Debug.LogWarning("message type " + msgType);
                     break;
@@ -104,6 +109,14 @@ namespace Assets.Scripts
         void OnMove(Device device, float acceleration)
         {
             device.Input.Speed = acceleration;
+        }
+
+        void OnReady(Device device, string name)
+        {
+            device.Name = string.IsNullOrEmpty(name) ? null : name;
+
+            if (device.Role == DeviceRole.Wait)
+                device.SetRole(DeviceRole.Ready);
         }
 
         void Update()

@@ -103,7 +103,7 @@ namespace Assets.Scripts
             if (HurtFor > 0f)
             {
                 HurtFor -= Time.deltaTime;
-                color = Color.Lerp(color, Color.red, HurtFor / MaxHurtFor);
+                color = Color.Lerp(color, Color.red, 0.2f);
             }
 
             CarParticles.S.Particles[particleId].startColor = color;
@@ -131,7 +131,9 @@ namespace Assets.Scripts
 
             CarParticles.S.Particles[particleId].position = lanePos + jumpOffset + bounceBack;
 
-            CarParticles.S.Particles[particleId].startColor = Color.red;
+            var color = Device != null ? Color.red : AIColor;
+
+            CarParticles.S.Particles[particleId].startColor = color;
             CarParticles.S.Particles[particleId].remainingLifetime = 10f;
             CarParticles.S.Particles[particleId].startSize = 1f - sineDeath;
             CarParticles.S.Particles[particleId].rotation3D = new Vector3(0, sineDeath * SpinDist, 0);
@@ -153,7 +155,10 @@ namespace Assets.Scripts
             if (KillingDt.HasValue)
                 return;
 
-            KillingDt = 0f;   
+            if(Device != null)
+                Lane.Level.ConductorScore++;
+
+            KillingDt = 0f;
         }
     }
 }

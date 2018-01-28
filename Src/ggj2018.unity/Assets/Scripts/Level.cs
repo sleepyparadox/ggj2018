@@ -18,12 +18,19 @@ namespace Assets.Scripts
         public List<CarLane> CarLanes = new List<CarLane>();
         public List<TruckLane> TruckLanes = new List<TruckLane>();
         public List<TrafficLight> TrafficLights = new List<TrafficLight>();
+
         Dictionary<Device, Car> _cars = new Dictionary<Device, Car>();
 
         TrafficMode _trafficMode;
         float _trafficModeElapsed;
 
         const float MaxTimePerTrafficMode = 3f;
+
+        public int CarScore = 0;
+        public int ConductorScore = 0;
+
+        float LevelTimeElapsed = 0f;
+        const float MaxTimePerLevel = 30f;
 
         void Awake()
         {
@@ -66,8 +73,10 @@ namespace Assets.Scripts
         {
             Canvas.S.SetScreen(Screen.Game);
 
-            while (true)
+            while (LevelTimeElapsed < MaxTimePerLevel)
             {
+                LevelTimeElapsed += Time.deltaTime;
+
                 // Update Traffic modes
                 _trafficModeElapsed += Time.deltaTime;
                 if(_trafficModeElapsed > MaxTimePerTrafficMode)
@@ -87,6 +96,9 @@ namespace Assets.Scripts
                     lane.Update();
 
                 RepopulateDevices();
+
+                var timeRemaining = MaxTimePerLevel - LevelTimeElapsed;
+                Canvas.S.UpdateScores(CarScore, ConductorScore, timeRemaining);
 
                 yield return null;
             }
@@ -131,7 +143,7 @@ namespace Assets.Scripts
             {
                 var pair = _cars.First(p => p.Value == car);
 
-                pair.Key.SetRole(DeviceRole.Wait);
+                pair.Key.SetRole(DeviceRole.Ready);
                 _cars.Remove(pair.Key);
             }
         }
