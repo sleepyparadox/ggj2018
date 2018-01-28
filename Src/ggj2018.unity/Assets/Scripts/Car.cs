@@ -35,6 +35,8 @@ namespace Assets.Scripts
 
         public object Log { get; private set; }
 
+        public int ValueOfCar { get { return Device != null ? 10 : 1; } }
+
         public Car(CarLane lane, float position)
         {
             Lane = lane;
@@ -155,13 +157,11 @@ namespace Assets.Scripts
             if (KillingDt.HasValue)
                 return;
 
-            if(Device != null)
-            {
-                Lane.Level.ConductorScore++;
-                var conductor = MainApp.S.Devices.Values.FirstOrDefault(d => d.Connected && d.Role == DeviceRole.Conductor);
-                if (conductor != null)
-                    conductor.Score++;
-            }
+            Lane.Level.ConductorScore += ValueOfCar;
+
+            var conductor = MainApp.S.Devices.Values.FirstOrDefault(d => d.Connected && d.Role == DeviceRole.Conductor);
+            if (conductor != null)
+                conductor.Score += ValueOfCar;
 
             KillingDt = 0f;
         }

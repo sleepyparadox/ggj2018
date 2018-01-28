@@ -46,11 +46,15 @@ namespace Assets.Scripts
             var carsToRemove = Cars.Where(c => c.Position > Level.LaneLength || c.Dead).ToList();
             foreach (var car in carsToRemove)
             {
-                if (car.Dead == false && car.Device != null)
+                if (car.Dead == false)
                 {
                     // Scored!
-                    Level.CarScore++;
-                    car.Device.Score++;
+                    Level.CarScore += car.ValueOfCar;
+
+                    if(car.Device != null)
+                    {
+                        car.Device.Score += car.ValueOfCar;
+                    }
                 }
 
                 Cars.Remove(car);

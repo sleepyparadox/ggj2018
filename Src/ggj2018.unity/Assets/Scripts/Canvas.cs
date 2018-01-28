@@ -10,6 +10,12 @@ namespace Assets.Scripts
     public class Canvas : MonoBehaviour
     {
         public static Canvas S { get; private set; }
+
+        const float FirstLobbyDuration = 60f;
+        const float QuickLobbyDuration = 30f;
+        //const float FirstLobbyDuration = 6f;
+        //const float QuickLobbyDuration = 3f;
+
         public Transform LobbyScreen;
         public Transform GameScreen;
         public Transform WinnerScreen;
@@ -23,15 +29,14 @@ namespace Assets.Scripts
         public UnityEngine.UI.Text ConductorScoreText;
         public UnityEngine.UI.Text TimerText;
 
+
+        public UnityEngine.UI.Text WinnersCarText;
+        public UnityEngine.UI.Text WinnersConductorText;
+
         const int MinPlayersNeed = 2;
 
         bool _firstTimeLobby;
         Dictionary<Device, PlayerIcon> _playerIcons = new Dictionary<Device, PlayerIcon>();
-
-        const float FirstLobbyDuration = 60f;
-        const float QuickLobbyDuration = 30f;
-        //const float FirstLobbyDuration = 6f;
-        //const float QuickLobbyDuration = 3f;
 
         void Awake()
         {
@@ -136,13 +141,31 @@ namespace Assets.Scripts
             CarsScoreText.text = carScore.ToString();
             ConductorScoreText.text = conductorScore.ToString();
             TimerText.text = string.Format("time remaining {0}", timerRemaining.ToString("00.00"));
+
+            var conductor = MainApp.S.Devices.Values.FirstOrDefault(d => d.Connected && d.Role == DeviceRole.Conductor);
+            var conductorName = conductor != null ? conductor.Name : "?";
+
+            WinnersCarText.text = string.Format("THE RESET\nSCORED {0}", carScore);
+            WinnersConductorText.text = string.Format("{0}\nSMASHED {1} CARS\nAS CONDUCTOR", conductorName, conductorScore);
         }
 
         public IEnumerator RunWinner()
         {
             SetScreen(Screen.Winner);
 
-            yield return null;
+            const float Offset = 600f;
+            const float IntoAnimDuration = 1f;
+
+            var intoAnimElapsed = 0f;
+            while(intoAnimElapsed < IntoAnimDuration)
+            {
+                var n = intoAnimElapsed / IntoAnimDuration;
+                WinnerScreen.transform.localPosition = Vector3.down * Offset * (1 - n);
+                yield return null;
+                intoAnimElapsed += Time.deltaTime;
+            }
+
+            WinnerScreen.transform.localPosition = Vector3.zero;
 
             var endAt = Time.time + 10f;
             while (Time.time < endAt)

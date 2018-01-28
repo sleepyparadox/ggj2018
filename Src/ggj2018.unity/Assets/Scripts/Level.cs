@@ -75,9 +75,16 @@ namespace Assets.Scripts
             Canvas.S.SetScreen(Screen.Game);
 
             // Choose a conductor
-            var conductor = MainApp.S.Devices.Values.FirstOrDefault(d => d.Connected && d.Role == DeviceRole.Ready);
-            if (conductor != null)
+            var conductorChoices = MainApp.S.Devices.Values.Where(d => d.Connected && d.Role == DeviceRole.Ready)
+                .OrderBy(d => d.Score)
+                .Take(5)
+                .ToList();
+
+            if (conductorChoices.Count > 0)
+            {
+                var conductor = conductorChoices[UnityEngine.Random.Range(0, conductorChoices.Count)];
                 conductor.SetRole(DeviceRole.Conductor);
+            }
 
             while (LevelTimeElapsed < MaxTimePerLevel  && HasConductor())
             {
@@ -130,18 +137,22 @@ namespace Assets.Scripts
                     continue;
 
                 const float MinDistance = Car.SpawnLength * 3f;
-                var suitableHost = CarLanes.SelectMany(l => l.Cars)
+                var suitableHosts = CarLanes.SelectMany(l => l.Cars)
                     .OrderBy(c => c.Position)
                     .Where(c => c.Position >= MinDistance && c.Device == null)
-                    .FirstOrDefault();
+                    .Skip(3) /*preserve first lane*/
+                    .Take(6) /*preserve first lane*/
+                    .ToList();
 
-                if (suitableHost == null)
+                if (suitableHosts.Count == 0)
                 {
-                    Debug.Log("no car found for " + device.DeviceId);
+                    // con car found
                     continue;
                 }
+                
+                // Choose a car
+                var suitableHost = suitableHosts[UnityEngine.Random.Range(0, suitableHosts.Count)];
 
-                Debug.Log("car found for " + device.DeviceId);
                 suitableHost.Device = device;
                 device.SetRole(DeviceRole.Car);
                 _cars.Add(device, suitableHost);
