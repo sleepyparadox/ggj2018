@@ -11,7 +11,7 @@ namespace Assets.Scripts
     {
         public static Canvas S { get; private set; }
 
-        const float FirstLobbyDuration = 60f;
+        const float FirstLobbyDuration = 90f;
         const float QuickLobbyDuration = 30f;
 
         public Transform LobbyScreen;
