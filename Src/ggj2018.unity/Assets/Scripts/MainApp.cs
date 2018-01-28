@@ -94,6 +94,12 @@ namespace Assets.Scripts
                 case "ready":
                     OnReady(device, (string)message[DataKey]);
                     break;
+                case "setlights":
+                    OnSetLights(device, (bool)message[DataKey]);
+                    break;
+                case "calltrain":
+                    OnCallTrain(device);
+                    break;
                 default:
                     Debug.LogWarning("message type " + msgType);
                     break;
@@ -117,6 +123,22 @@ namespace Assets.Scripts
 
             if (device.Role == DeviceRole.Wait)
                 device.SetRole(DeviceRole.Ready);
+        }
+
+        void OnSetLights(Device device, bool greenToGo)
+        {
+            if (CurrentLevel == null)
+                return;
+
+            if (greenToGo)
+                CurrentLevel.SetTrafficMode(TrafficMode.CarGo);
+            else
+                CurrentLevel.SetTrafficMode(TrafficMode.CarSlow);
+        }
+
+        void OnCallTrain(Device device)
+        {
+
         }
 
         void Update()

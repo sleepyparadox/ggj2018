@@ -65,31 +65,25 @@
 					<div class="row">
 						<div class="col-12 text-primary text-center">
 							<div class="alert alert-alert-secondary">
-								<strong>Eleminate</strong> cars to score points
+								You are the disgruntled <strong>CONDUCTOR</strong> 
+								<br>
+								<strong>DESTROY</strong> cars to <strong>SCORE</strong>
 								</div>
 						</div>
 					</div>
-					
-					<div class="custom-control custom-radio">
-						<input type="radio" id="customRadio1" name="customRadio" class="custom-control-input" checked="" ontouchstart="setlights(true)">
-						<label class="custom-control-label btn btn-success btn-block" for="customRadio1">Green Light</label>
-					</div>
-					<br>
-					<div class="custom-control custom-radio">
-						<input type="radio" id="customRadio2" name="customRadio" class="custom-control-input" ontouchstart="setlights(false)">
-						<label class="custom-control-label btn btn-danger btn-block" for="customRadio2">Red Light</label>
-					</div>
-					<br>
 					<br>
 					<div class="row">
-						<div class="col-6 offset-3 text-center">
-							<div class="btn btn-danger" ontouchstart="calltrain()" onmousedown="calltrain()">
-								<i class="fa fa-train fa-5x"></i>
-								<br><br>
-								<span>Summon train</span>
+						<div class="col-6 text-center">
+							<div class="btn btn-danger btn-block" ontouchstart="setlights(false)" onmousedown="setlights(false)">
+								<i class="fa fa-truck fa-flip-horizontal fa-5x"></i>
 							</div>
 						</div>
-					</div>
+						<div class="col-6 text-center">
+							<div class="btn btn-success btn-block" ontouchstart="setlights(true)" onmousedown="setlights(true)">
+								<i class="fa fa-hand-o-right fa-5x"></i>
+							</div>
+						</div>
+                    </div>
 				</div>
 				
 				
@@ -98,17 +92,19 @@
 					<div class="row">
 						<div class="col-12 text-primary text-center">
 							<div class="alert alert-alert-secondary">
-								<strong>Survive</strong> the crossing to score points
-								</div>
+								You are a <strong>CAR</strong> 
+								<br>
+								<strong>SURVIVE</strong> the crossing to <strong>SCORE</strong>
+							</div>
 						</div>
 					</div>
-					
+					<br>
                     <div class="row">
 						<div class="col-6 offset-3 text-center">
 							<div class="btn btn-danger" ontouchstart="honk()" onmousedown="honk()">
-								<i class="fa fa-bullhorn fa-5x"></i>
-								<br><br>
 								<span>Honk</span>
+								<br><br>
+								<i class="fa fa-bullhorn fa-5x"></i>
 							</div>
 						</div>
 					</div>
@@ -125,7 +121,6 @@
 								<i class="fa fa-forward fa-5x"></i>
 							</div>
 						</div>
-						
                     </div>
                 </div>
             </div>

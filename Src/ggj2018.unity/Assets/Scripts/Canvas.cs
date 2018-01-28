@@ -20,9 +20,19 @@ namespace Assets.Scripts
         public UnityEngine.UI.Text ConductorScoreText;
         public UnityEngine.UI.Text TimerText;
 
+        const int MinPlayersNeed = 2;
+
+        bool _firstTimeLobby;
+
+        //const float FirstLobbyDuration = 60f;
+        //const float QuickLobbyDuration = 30f;
+        const float FirstLobbyDuration = 6f;
+        const float QuickLobbyDuration = 3f;
+
         void Awake()
         {
             S = this;
+            _firstTimeLobby = true;
         }
 
         public void SetScreen(Screen screen)
@@ -45,15 +55,19 @@ namespace Assets.Scripts
             {
                 if(HasEnoughPlayers() == false)
                 {
-                    LobbyText.text = ReadyPlayers() + " cars";
+                    var needed = MinPlayersNeed - ReadyPlayers();
+                    LobbyText.text = string.Format("{0} MORE PLAYERS NEEDED", needed);
+
                     yield return null;
                 }
 
-                var endAt = Time.time + 10f;
+                var endAt = Time.time + (_firstTimeLobby ? FirstLobbyDuration : QuickLobbyDuration);
+                _firstTimeLobby = false;
+
                 while (HasEnoughPlayers() && Time.time < endAt)
                 {
                     var remaining = endAt - Time.time;
-                    LobbyText.text = "" + remaining.ToString("00.0");
+                    LobbyText.text = string.Format("STARTING {0}", remaining.ToString("00.0"));
 
                     yield return null;
                 }

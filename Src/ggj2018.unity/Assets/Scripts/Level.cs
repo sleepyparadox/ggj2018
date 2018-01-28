@@ -9,6 +9,8 @@ namespace Assets.Scripts
 {
     public class Level : MonoBehaviour
     {
+        const float MaxTimePerLevel = 60f;
+
         public Transform LaneParent;
         public Transform TrafficLightParent;
         public Transform TrucksParent;
@@ -24,14 +26,13 @@ namespace Assets.Scripts
         TrafficMode _trafficMode;
         float _trafficModeElapsed;
 
-        const float MaxTimePerTrafficMode = 3f;
+        const float MaxTimePerTrafficMode = 1f;
 
         public int CarScore = 0;
         public int ConductorScore = 0;
 
         float LevelTimeElapsed = 0f;
-        const float MaxTimePerLevel = 30f;
-
+        
         void Awake()
         {
             for (int i = 0; i < LaneParent.childCount; i++)
@@ -73,16 +74,21 @@ namespace Assets.Scripts
         {
             Canvas.S.SetScreen(Screen.Game);
 
-            while (LevelTimeElapsed < MaxTimePerLevel)
+            // Choose a conductor
+            var conductor = MainApp.S.Devices.Values.FirstOrDefault(d => d.Connected && d.Role == DeviceRole.Ready);
+            if (conductor != null)
+                conductor.SetRole(DeviceRole.Conductor);
+
+            while (LevelTimeElapsed < MaxTimePerLevel  && HasConductor())
             {
                 LevelTimeElapsed += Time.deltaTime;
 
                 // Update Traffic modes
                 _trafficModeElapsed += Time.deltaTime;
-                if(_trafficModeElapsed > MaxTimePerTrafficMode)
+                if(_trafficModeElapsed > MaxTimePerTrafficMode 
+                    && (_trafficMode == TrafficMode.CarSlow))
                 {
-                    var nextMode = ((int)_trafficMode + 1) % (int)TrafficMode.COUNT;
-                    SetTrafficMode((TrafficMode)nextMode);
+                    SetTrafficMode(TrafficMode.TruckGo);
                 }
                 
                 // Update car particles
@@ -103,7 +109,12 @@ namespace Assets.Scripts
                 yield return null;
             }
         }
-        
+
+        bool HasConductor()
+        {
+            return MainApp.S.Devices.Values.Any(d => d.Connected && d.Role == DeviceRole.Conductor);
+        }
+
         void RepopulateDevices()
         {
             foreach (var device in MainApp.S.Devices.Values)
@@ -115,7 +126,7 @@ namespace Assets.Scripts
                     _cars.Remove(device);
                 }
 
-                if (_cars.ContainsKey(device) || device.Connected == false)
+                if (_cars.ContainsKey(device) || device.Connected == false || device.Role != DeviceRole.Ready)
                     continue;
 
                 const float MinDistance = Car.SpawnLength * 3f;
